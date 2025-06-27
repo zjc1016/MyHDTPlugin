@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36221.1 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyHDTPlugin", "MyHDTPlugin\MyHDTPlugin.csproj", "{D2E040DB-E6D5-46A6-8CAB-E9B021FCCC2E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D2E040DB-E6D5-46A6-8CAB-E9B021FCCC2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2E040DB-E6D5-46A6-8CAB-E9B021FCCC2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2E040DB-E6D5-46A6-8CAB-E9B021FCCC2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2E040DB-E6D5-46A6-8CAB-E9B021FCCC2E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {93E59431-45D4-40BD-9852-D9FF86E9293C}
+	EndGlobalSection
+EndGlobal
