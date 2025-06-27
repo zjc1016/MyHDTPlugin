@@ -31,9 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Chuck-HearthDb, Version=32.2.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Chuck-HearthDb.32.2.2\lib\netstandard2.0\Chuck-HearthDb.dll</HintPath>
-    </Reference>
+    <Reference Include="HearthDb, Version=32.4.2.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="HearthstoneDeckTracker">
       <HintPath>..\..\..\..\AppData\Local\HearthstoneDeckTracker\app-1.44.15\HearthstoneDeckTracker.exe</HintPath>
     </Reference>
@@ -67,9 +65,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

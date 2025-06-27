@@ -7,19 +7,48 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Background="LightBlue">
-        <TextBlock x:Name="Text" 
-                   Text="我是插件面板"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   FontSize="16"/>
-        <MediaElement x:Name="MyMedia"
-              Width="300"
-              Height="200"
-              LoadedBehavior="Manual"
-              UnloadedBehavior="Stop"
-              Stretch="Uniform"
-              Visibility="Visible"
-              MediaEnded="MyMedia_MediaEnded"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- 第一行显示 Text -->
+            <RowDefinition Height="Auto"/>
+            <!-- 第二行显示 Text2 -->
+            <RowDefinition Height="Auto"/>
+            
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
+        <TextBlock x:Name="Text" 
+               Text="我是插件面板"
+               VerticalAlignment="Center"
+               HorizontalAlignment="Center"
+               FontSize="16"
+               Grid.Row="0" />
+
+        <TextBlock x:Name="Text2" 
+               Text="我是插件面板"
+               VerticalAlignment="Center"
+               HorizontalAlignment="Center"
+               FontSize="16"
+               Grid.Row="1" />
+        <TextBlock x:Name="Text3" 
+           Text="我是插件面板"
+           VerticalAlignment="Center"
+           HorizontalAlignment="Center"
+           FontSize="16"
+           TextWrapping="Wrap"
+           MaxWidth="300"
+           Grid.Row="2" />
+
+
+        <MediaElement x:Name="MyMedia"
+                  Width="300"
+                  Height="200"
+                  LoadedBehavior="Manual"
+                  UnloadedBehavior="Stop"
+                  Stretch="Uniform"
+                  Visibility="Visible"
+                  Grid.Row="3"
+                  MediaEnded="MyMedia_MediaEnded"/>
     </Grid>
+
 </UserControl>

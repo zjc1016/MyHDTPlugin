@@ -1,4 +1,6 @@
-﻿using Hearthstone_Deck_Tracker.API;
+﻿using HearthDb.Enums;
+using Hearthstone_Deck_Tracker.API;
+using Hearthstone_Deck_Tracker.Hearthstone.Entities;
 using Hearthstone_Deck_Tracker.Utility;
 using System;
 using System.Collections.Generic;
@@ -14,7 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using Card = Hearthstone_Deck_Tracker.Hearthstone.Card;
 namespace MyHDTPlugin
 {
 
@@ -26,7 +28,7 @@ namespace MyHDTPlugin
         public MyPet()
         {
 
-            InitializeComponent();  // ✅ 只有在 x:Class 正确时才会编译这个方法
+            InitializeComponent();  
             PlayVideoLoop("待机.mp4");
         }
         public void Update(string text, string video)
@@ -56,10 +58,21 @@ namespace MyHDTPlugin
         {
             this.Visibility = Visibility.Hidden;
         }
-        public void Check()
-        {
 
+
+        public void Check(List<Entity> opp, List<Entity> player)
+        {
+            
+            int OppTotalAttack = opp
+                    .Where(e => (e.IsMinion || e.IsHero) && e.IsInPlay)
+                    .Sum(e => e.Attack);
+            Text2.Text = $"敌方总场攻：{OppTotalAttack}";
+            int PlayerTotalAttack = player.Where(e => (e.IsMinion || e.IsHero) && e.IsInPlay)
+                                .Sum(e => e.Attack);
+            Text3.Text = $"我方总场攻：{PlayerTotalAttack}";
         }
+
+        
 
         private void PlayVideoLoop(string video)
         {
@@ -92,6 +105,8 @@ namespace MyHDTPlugin
             
         }
 
+
+    
     }
 }
 
