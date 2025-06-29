@@ -40,6 +40,33 @@ namespace MyHDTPlugin
         {
             turn = player;
             Pet.Update(player + "回合开始！", null);
+            var opp_entity = CoreAPI.Game.Opponent.PlayerEntities.ToList();
+            //var player = CoreAPI.Game.Player.Minions.ToList();
+            var player_entity = CoreAPI.Game.Player.PlayerEntities.ToList();
+
+            if (turn == ActivePlayer.Player && player_entity.Any(entity =>
+            {
+                var n = false;
+                if (entity.IsInPlay) {
+                    if (GetCardByDbfId(entity.Card.DbfId).GetLocName(HearthDb.Enums.Locale.zhCN) == "水元素")
+                    {
+                        n = true;
+                    }
+                }
+                return n;
+            }))
+            {
+                Pet.Update("水元素冻住还能动吗", "水元素冻住还能动吗");
+            }
+            else
+            {
+                Pet.CheckAttack(opp_entity, player_entity, turn);
+            }
+
+
+
+                
+
         }
 
         internal void GameStart()
@@ -49,13 +76,44 @@ namespace MyHDTPlugin
 
         public void OnPlayerPlay(Card card)
         {
-            Pet.Update("你使用卡牌：\n" + GetCardByDbfId(card.DbfId).GetLocName(HearthDb.Enums.Locale.zhCN) , null);
+
+            if (GetCardByDbfId(card.DbfId).GetLocName(HearthDb.Enums.Locale.zhCN) == "亵渎")
+            {
+                Pet.Update("教科书般的亵渎！", "教科书般的亵渎");
+            }
+            else if (GetCardByDbfId(card.DbfId).GetLocName(HearthDb.Enums.Locale.zhCN) == "骨鸡蛋") {
+                Pet.Update("亡灵小鸡是亡灵吗？", "亡灵小鸡是亡灵吗");
+            }
+            else if (card.Health >= 15 && card.Attack <= 5)
+            {
+                Pet.Update("你打出了一个超大型屁股！", "超大型屁股");
+            }
+            else if (GetCardByDbfId(card.DbfId).GetLocName(HearthDb.Enums.Locale.zhCN).Contains("铜须"))
+            {
+                Pet.Update("铜须是生物吗？", "铜须是生物吗");
+            }
+            else
+            {
+                Pet.Update("你使用卡牌：\n" + GetCardByDbfId(card.DbfId).GetLocName(HearthDb.Enums.Locale.zhCN), null);
+            }
         }
 
 
         public void OnOpponentPlay(Card card)
         {
-            Pet.Update("对手使用卡牌：\n" + GetCardByDbfId(card.DbfId).GetLocName(HearthDb.Enums.Locale.zhCN) , null);
+            if (GetCardByDbfId(card.DbfId).GetLocName(HearthDb.Enums.Locale.zhCN) == "骨鸡蛋")
+            {
+                Pet.Update("亡灵小鸡是亡灵吗？", "亡灵小鸡是亡灵吗");
+            }
+            else if (GetCardByDbfId(card.DbfId).GetLocName(HearthDb.Enums.Locale.zhCN).Contains("铜须"))
+            {
+                Pet.Update("铜须是生物吗？", "铜须是生物吗");
+            }
+            else
+            {
+                Pet.Update("对手使用卡牌：\n" + GetCardByDbfId(card.DbfId).GetLocName(HearthDb.Enums.Locale.zhCN), null);
+            }
+                
         }
 
         public void Update()
@@ -63,7 +121,7 @@ namespace MyHDTPlugin
             var opp = CoreAPI.Game.Opponent.PlayerEntities.ToList();
             //var player = CoreAPI.Game.Player.Minions.ToList();
             var player = CoreAPI.Game.Player.PlayerEntities.ToList();
-            Pet.Check(opp,player);
+            Pet.Check(opp,player, turn);
         }
         private HearthDb.Card GetCardByDbfId(int DbfId)
         {
@@ -104,11 +162,11 @@ namespace MyHDTPlugin
         {
             if(turn == ActivePlayer.Player)
             {
-                Pet.Update("你在自己的回合爆牌！\n" + GetCardByDbfId(card.DbfId).GetLocName(HearthDb.Enums.Locale.zhCN), "爆牌.mp4");
+                Pet.Update("你在自己的回合爆牌！\n" + GetCardByDbfId(card.DbfId).GetLocName(HearthDb.Enums.Locale.zhCN), "失误");
             }
             if (turn == ActivePlayer.Opponent)
             {
-                Pet.Update("你在对手的回合爆牌！\n" + GetCardByDbfId(card.DbfId).GetLocName(HearthDb.Enums.Locale.zhCN), "爆牌.mp4");
+                Pet.Update("你在对手的回合爆牌！\n" + GetCardByDbfId(card.DbfId).GetLocName(HearthDb.Enums.Locale.zhCN), "失误");
             }
 
         }
@@ -271,12 +329,20 @@ namespace MyHDTPlugin
 
         void IPetAction.OnGameWon()
         {
-            Pet.Update("你赢了!", "胜利.mp4");
+            Pet.Update("你赢了!", "胜利");
         }
 
         void IPetAction.OnGameLost()
         {
-            Pet.Update("你输了！", null);
+            if(turn == ActivePlayer.Player)
+            {
+                Pet.Update("你在自己的回合输了！", "在自己的回合失败");
+            }
+            else
+            {
+                Pet.Update("你输了！", "失败");
+            }
+                
         }
 
         void IPetAction.OnGameTied()

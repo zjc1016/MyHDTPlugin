@@ -1,9 +1,11 @@
 ﻿using HearthDb.Enums;
 using Hearthstone_Deck_Tracker.API;
+using Hearthstone_Deck_Tracker.Enums;
 using Hearthstone_Deck_Tracker.Hearthstone.Entities;
 using Hearthstone_Deck_Tracker.Utility;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,28 +19,37 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Card = Hearthstone_Deck_Tracker.Hearthstone.Card;
+
 namespace MyHDTPlugin
 {
 
+
     public partial class MyPet
     {
-        public string nowplaying = "待机.mp4";
-        public string nextplaying = "";
+        private static readonly Random _random = new Random();
+        public string nowplaying = "main";
+        public ActivePlayer turn = ActivePlayer.None;
+        public bool IsDaji = true;
+       
 
         public MyPet()
         {
 
             InitializeComponent();  
-            PlayVideoLoop("待机.mp4");
+            PlayVideoLoop("main");
         }
         public void Update(string text, string video)
         {   
             Text.Text = text;
             this.Visibility = Visibility.Visible;
-            if (video != null && nowplaying == "待机.mp4")
+            if (video != null && (nowplaying == "main" || nowplaying == "待机"))
             {
                 nowplaying = video;
                 PlayVideoLoop(nowplaying);
+            }
+            if(video == null)
+            {
+                DaiJi(turn);
             }
             
             UpdatePosition();
@@ -60,7 +71,7 @@ namespace MyHDTPlugin
         }
 
 
-        public void Check(List<Entity> opp, List<Entity> player)
+        public void CheckAttack(List<Entity> opp, List<Entity> player, ActivePlayer Turn)
         {
             
             int OppTotalAttack = opp
@@ -70,37 +81,79 @@ namespace MyHDTPlugin
             int PlayerTotalAttack = player.Where(e => (e.IsMinion || e.IsHero) && e.IsInPlay)
                                 .Sum(e => e.Attack);
             Text3.Text = $"我方总场攻：{PlayerTotalAttack}";
-        }
 
-        
+            if ((OppTotalAttack - PlayerTotalAttack  > 10) && (PlayerTotalAttack <= 5) && Turn == ActivePlayer.Player)
+            {
+                Update("场攻差距好大！","别急");
+            }
+            else
+            {
+                DaiJi(Turn);
+            }
+
+        }
+        public void Check(List<Entity> opp, List<Entity> player , ActivePlayer Turn)
+        {
+
+            DaiJi(Turn);
+
+
+        }
+        public void DaiJi(ActivePlayer NowTurn)
+        {
+            if (NowTurn != turn)
+            {
+                turn = NowTurn;
+                IsDaji = true;
+            }
+            if (IsDaji && nowplaying == "main" && _random.NextDouble() < 0.01 && (nowplaying != "胜利" || nowplaying != "失败" || nowplaying != "平局" || nowplaying != "在自己的回合失败"))
+            {
+                IsDaji = false;
+                nowplaying = "待机";
+                PlayVideoLoop(nowplaying);
+            }
+        }
 
         private void PlayVideoLoop(string video)
         {
             string dllDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            string videoPath = System.IO.Path.Combine(dllDir, video);
+            string videoPath;
 
-            if (System.IO.File.Exists(videoPath))
+            // 查找所有以“video”参数为前缀的 mp4 文件，例如 待机1.mp4、待机2.mp4 等
+            string[] videos = Directory.GetFiles(dllDir, video + "*.mp4");
+
+            if (videos.Length == 0)
             {
-                MyMedia.Source = new Uri(videoPath, UriKind.Absolute);
-                MyMedia.Play();
+                // 没有匹配到多个，就尝试单个 video.mp4
+                videoPath = System.IO.Path.Combine(dllDir, video + ".mp4");
+                if (!System.IO.File.Exists(videoPath))
+                {
+                    MessageBox.Show("找不到视频文件：" + video + ".mp4");
+                    return;
+                }
             }
             else
             {
-                MessageBox.Show("找不到视频文件：" + videoPath);
+                // 有多个匹配，随机选一个
+                videoPath = videos[_random.Next(videos.Length)];
             }
+            MyMedia.Stop();
+            MyMedia.Source = new Uri(videoPath, UriKind.Absolute);
+            MyMedia.Play();
         }
+
 
         // 在播放结束时再次播放，实现循环
         private void MyMedia_MediaEnded(object sender, RoutedEventArgs e)
         {
-            if (nowplaying == "胜利.mp4") { 
-                nowplaying = "待机.mp4";
+            if (nowplaying == "胜利" || nowplaying == "失败") { 
+                nowplaying = "main";
             }
             else
             {
-                nowplaying = "待机.mp4";
+                nowplaying = "main";
                 PlayVideoLoop(nowplaying);
-                MyMedia.Play();
+                
             }
             
         }
