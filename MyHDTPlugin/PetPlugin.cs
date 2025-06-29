@@ -54,13 +54,13 @@ namespace MyHDTPlugin
             // called every ~100ms
         }
 
-        public string Name => "PLUGIN NAME";
+        public string Name => "宠物";
 
-        public string Description => "DESCRIPTION";
+        public string Description => "宠物插件";
 
-        public string ButtonText => "BUTTON TEXT";
+        public string ButtonText => "";
 
-        public string Author => "AUTHOR";
+        public string Author => "失智香风乃";
 
         public Version Version => new Version(0, 0, 1);
 
