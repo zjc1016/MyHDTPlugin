@@ -45,16 +45,8 @@ namespace MyHDTPlugin
             var player_entity = CoreAPI.Game.Player.PlayerEntities.ToList();
 
             if (turn == ActivePlayer.Player && player_entity.Any(entity =>
-            {
-                var n = false;
-                if (entity.IsInPlay) {
-                    if (GetCardByDbfId(entity.Card.DbfId).GetLocName(HearthDb.Enums.Locale.zhCN) == "水元素")
-                    {
-                        n = true;
-                    }
-                }
-                return n;
-            }))
+                entity.IsInPlay &&
+                GetCardByDbfId(entity.Card.DbfId)?.GetLocName(HearthDb.Enums.Locale.zhCN) == "水元素"))
             {
                 Pet.Update("水元素冻住还能动吗", "水元素冻住还能动吗");
             }
@@ -65,13 +57,14 @@ namespace MyHDTPlugin
 
 
 
-                
+
+
 
         }
 
         internal void GameStart()
         {
-            Pet.Update("游戏开始！", null);
+            Pet.Update("游戏开始！", "main");
         }
 
         public void OnPlayerPlay(Card card)
@@ -336,7 +329,7 @@ namespace MyHDTPlugin
         {
             if(turn == ActivePlayer.Player)
             {
-                Pet.Update("你在自己的回合输了！", "在自己的回合失败");
+                Pet.Update("你在自己的回合输了！", "在自己的回合输了");
             }
             else
             {

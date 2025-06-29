@@ -35,7 +35,10 @@ namespace MyHDTPlugin
         public MyPet()
         {
 
-            InitializeComponent();  
+            InitializeComponent();
+            string dllDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            string imagePath = System.IO.Path.Combine(dllDir, "bg.jpg");
+            MediaBackground.Source = new BitmapImage(new Uri(imagePath, UriKind.Absolute));
             PlayVideoLoop("main");
         }
         public void Update(string text, string video)
@@ -52,13 +55,20 @@ namespace MyHDTPlugin
                 DaiJi(turn);
             }
             
-            UpdatePosition();
+            
 
         }
         public void UpdatePosition()
         {
-            Canvas.SetBottom(this, Core.OverlayWindow.Height * 5 / 100);
-            Canvas.SetLeft(this, Core.OverlayWindow.Width * 10 / 100);
+            Canvas.SetBottom(this, Core.OverlayWindow.Height * 15 / 100);
+            Canvas.SetLeft(this, Core.OverlayWindow.Width * 15 / 100);
+            double width = Core.OverlayWindow.Width * 0.16; // 占窗口 16%
+            double height = width * 9 / 16.0; // 保证 16:9
+            MyMedia.Width = width;
+            MyMedia.Height = height;
+            MediaBackground.Width = width;
+            MediaBackground.Height = height;
+
         }
         public void Show()
         {
@@ -94,14 +104,14 @@ namespace MyHDTPlugin
         }
         public void Check(List<Entity> opp, List<Entity> player , ActivePlayer Turn)
         {
-
+            UpdatePosition();
             DaiJi(Turn);
 
 
         }
         public void DaiJi(ActivePlayer NowTurn)
         {
-            if (NowTurn != turn)
+            if (NowTurn != turn && NowTurn != ActivePlayer.None && this.Visibility == Visibility.Visible)
             {
                 turn = NowTurn;
                 IsDaji = true;
@@ -146,7 +156,7 @@ namespace MyHDTPlugin
         // 在播放结束时再次播放，实现循环
         private void MyMedia_MediaEnded(object sender, RoutedEventArgs e)
         {
-            if (nowplaying == "胜利" || nowplaying == "失败") { 
+            if (nowplaying == "胜利" || nowplaying == "失败" || nowplaying == "平局" || nowplaying == "在自己的回合输了") { 
                 nowplaying = "main";
             }
             else

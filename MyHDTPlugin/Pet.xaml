@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:MyHDTPlugin"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="LightBlue">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <!-- 第一行显示 Text -->
@@ -40,15 +40,23 @@
            Grid.Row="2" />
 
 
-        <MediaElement x:Name="MyMedia"
-                  Width="300"
-                  Height="200"
+        <Grid Grid.Row="3">
+            <MediaElement x:Name="MyMedia"
+                  Width="368"
+                  Height="207"
                   LoadedBehavior="Manual"
                   UnloadedBehavior="Stop"
                   Stretch="Uniform"
-                  Visibility="Visible"
-                  Grid.Row="3"
-                  MediaEnded="MyMedia_MediaEnded"/>
+                  MediaEnded="MyMedia_MediaEnded"
+                          Grid.ZIndex="1"
+                  />
+            <Image x:Name="MediaBackground"
+            Stretch="UniformToFill"
+            Width="368"
+            Height="207"
+                   Grid.ZIndex="0"
+            />
+        </Grid>
     </Grid>
 
 </UserControl>
